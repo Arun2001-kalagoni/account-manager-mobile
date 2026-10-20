@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+app:
+  jwt:
+    # Demo secret for local development only. Override with APP_JWT_SECRET in any real environment.
+    secret: ${APP_JWT_SECRET:change-me-this-is-a-local-dev-secret-of-at-least-32-bytes}
+    access-token-minutes: 15
+    refresh-token-days: 7

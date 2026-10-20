@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Account Manager",
+    "slug": "account-manager-mobile",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": { "supportsTablet": false, "bundleIdentifier": "com.arunk.accountmanager" },
+    "android": { "package": "com.arunk.accountmanager" },
+    "extra": { "apiBaseUrl": "http://localhost:8080" }
+  }
+}
