@@ -5,3 +5,7 @@ dist/
 backend/target/
 .idea/
 .DS_Store
+ios/*.xcodeproj/
+ios/AccountManager/Info.plist
+ios/build/
+xcuserdata/

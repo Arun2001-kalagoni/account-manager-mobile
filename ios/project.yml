@@ -1,0 +1,44 @@
+# Generate the Xcode project with: brew install xcodegen && xcodegen generate
+name: AccountManager
+options:
+  bundleIdPrefix: com.arunk
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+targets:
+  AccountManager:
+    type: application
+    platform: iOS
+    sources: [AccountManager]
+    info:
+      path: AccountManager/Info.plist
+      properties:
+        CFBundleDisplayName: Account Manager
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        API_BASE_URL: "http://localhost:8080"
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.arunk.accountmanager.ios
+  AccountManagerTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources: [AccountManagerTests]
+    dependencies:
+      - target: AccountManager
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+schemes:
+  AccountManager:
+    build:
+      targets:
+        AccountManager: all
+    test:
+      targets: [AccountManagerTests]

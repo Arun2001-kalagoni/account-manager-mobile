@@ -1,6 +1,9 @@
 # Account Manager Mobile App
 
-A cross-platform (Android & iOS) account management app built with **React Native, TypeScript, and Expo**, backed by a **Spring Boot** API with **JWT authentication**.
+An account management app for Android and iOS, backed by a **Spring Boot** API with **JWT authentication**. It comes in two clients that share the same API:
+
+- **`ios/`**: a native iOS app in **Swift and SwiftUI** (iOS 16+), with Keychain token storage and XCTest coverage.
+- **`mobile/`**: a cross-platform app in **React Native, TypeScript, and Expo**.
 
 Customers sign in, land on a personalized home screen with their balance and per-line data usage, and can open an account view with profile and line details.
 
@@ -14,7 +17,40 @@ Customers sign in, land on a personalized home screen with their balance and per
 - **Reusable component library**: `Button`, `Card`, `TextField`, `Screen`, and `UsageBar`, all driven by shared theme tokens so every screen looks consistent on both platforms.
 - **Auth-gated navigation**: signed-out users only see the login stack; signed-in users only see the app stack.
 
-## Project structure
+## Native iOS app (Swift, SwiftUI)
+
+- **SwiftUI screens**: login, home (balance and per-line data usage with pull-to-refresh), and account, built with `NavigationStack`.
+- **MVVM**: `AuthViewModel` and `HomeViewModel` are `@MainActor` observable objects; views only render state.
+- **Keychain sessions**: `KeychainTokenStore` saves tokens with `kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly`.
+- **Token refresh in an actor**: `APIClient` is a Swift `actor`. On a 401 it refreshes once and retries. Concurrent requests share one in-flight refresh, and a failed refresh clears the session and returns the user to login.
+- **Reusable components**: `PrimaryButton`, `CardView`, `LabeledField`, and `UsageBar`, styled from one `Theme`.
+- **Tests**: `APIClientTests` uses a stubbed `URLProtocol` to cover login, wrong password, refresh-and-retry, concurrent refresh, and failed refresh.
+
+```
+ios/
+  project.yml                  XcodeGen spec (app + unit-test targets)
+  AccountManager/
+    App/                       AccountManagerApp, RootView (auth-gated navigation)
+    Auth/                      AuthViewModel, TokenStore (Keychain)
+    Networking/                APIClient (actor), APIError
+    Models/                    AccountSummary, Line
+    Components/                Theme, PrimaryButton, CardView, LabeledField, UsageBar
+    Features/                  Login, Home (view + view model), Account
+  AccountManagerTests/         APIClientTests, TestSupport (URLProtocol stub, in-memory store)
+```
+
+Run it (macOS with Xcode 15+):
+
+```bash
+brew install xcodegen
+cd ios
+xcodegen generate
+open AccountManager.xcodeproj      # Run on an iPhone simulator; Cmd+U runs the tests
+```
+
+The API base URL is `API_BASE_URL` in `ios/project.yml` (default `http://localhost:8080`, which the iOS simulator can reach).
+
+## React Native app: project structure
 
 ```
 backend/                 Spring Boot 3 API (Java 17)
@@ -50,7 +86,7 @@ export APP_JWT_SECRET="a-long-random-secret-of-at-least-32-bytes"
 
 Demo user: `demo@example.com` / `Password123!`
 
-### 2. Mobile app
+### 2. React Native app
 
 ```bash
 cd mobile
